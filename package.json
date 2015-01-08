@@ -1,0 +1,22 @@
+{
+  "name": "parse-github-webhook",
+  "version": "0.0.1",
+  "description": "Parses Github webhooks adding some useful data",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js | node_modules/.bin/tap-spec"
+  },
+  "keywords": [
+    "github",
+    "webhooks"
+  ],
+  "author": "Gregor MacLennan",
+  "license": "MIT",
+  "devDependencies": {
+    "tap-spec": "^2.1.2",
+    "tape": "^3.0.3"
+  },
+  "dependencies": {
+    "clone": "^0.2.0"
+  }
+}
