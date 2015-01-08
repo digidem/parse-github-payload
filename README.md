@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/digidem/parse-github-webhook.svg)](https://travis-ci.org/digidem/parse-github-webhook)
+
 Github Webhook Parser
 =====================
 
