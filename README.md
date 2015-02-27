@@ -1,8 +1,8 @@
-# parse-github-webhook
+# parse-github-payload
 
-[![build status](https://secure.travis-ci.org/digidem/parse-github-webhook.png)](http://travis-ci.org/digidem/parse-github-webhook)
+[![build status](https://secure.travis-ci.org/digidem/parse-github-payload.png)](http://travis-ci.org/digidem/parse-github-payload)
 
-Parses a github push event adding a list of files added, modified and removed to the payload
+Parses a github push event payload adding a list of files added, modified and removed to the payload
 
 
 ### `parsePayload(payload)`
@@ -48,7 +48,7 @@ removed.
 Requires [nodejs](http://nodejs.org/).
 
 ```sh
-$ npm install parse-github-webhook
+$ npm install parse-github-payload
 ```
 
 ## Tests
