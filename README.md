@@ -43,6 +43,10 @@ push event, duplicates removed.
 duplicates removed and any files that were removed in a later commit also
 removed.
 
+`_files.added_and_modified` array of files that have been added and
+modified in the commits in a push event, excluding files that were added or
+modified and subsequently deleted.
+
 ## Installation
 
 Requires [nodejs](http://nodejs.org/).

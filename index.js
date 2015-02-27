@@ -30,6 +30,10 @@ var clone = require('clone');
  * `_files.added` Array of files added to and modified in the repo, with
  * duplicates removed and any files that were removed in a later commit also
  * removed.
+ *
+ * `_files.added_and_modified` array of files that have been added and
+ * modified in the commits in a push event, excluding files that were added or
+ * modified and subsequently deleted.
  */
 function parsePayload(payload) {
   if (typeof payload != 'object')
