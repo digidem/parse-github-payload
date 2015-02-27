@@ -1,40 +1,60 @@
-[![Build Status](https://travis-ci.org/digidem/parse-github-webhook.svg)](https://travis-ci.org/digidem/parse-github-webhook)
+# parse-github-webhook
 
-Github Webhook Parser
-=====================
+[![build status](https://secure.travis-ci.org/digidem/parse-github-webhook.png)](http://travis-ci.org/digidem/parse-github-webhook)
 
-Parses a [Github webhook payload](https://developer.github.com/webhooks/#payloads) returning a clone of the payload with additional useful properties.
+Parses a github push event adding a list of files added, modified and removed to the payload
 
-Right now it only does anything with the [push event](https://developer.github.com/v3/activity/events/types/#pushevent) adding a property `_files` with arrays of files that have been added, modified and removed by the push event.
 
-## Usage
+### `parsePayload(payload)`
 
-```javascript
-var parse = require('parse-github-webhook');
+Parses a [Github webhook
+payload](https://developer.github.com/webhooks/#payloads) returning a clone
+of the payload with additional useful properties.
 
-var payload = parse(githubPushEventPayload);
+Right now it only does anything with the [push
+event](https://developer.github.com/v3/activity/events/types/#pushevent)
+adding a property `_files` with arrays of files that have been added,
+modified and removed by the push event.
 
-console.log(payload._files);
+### Why?
+
+If you want to act on added or modified files that are present in the most
+recent commit. A single push event might include commits that add then
+delete a file. In this case that file would not be included in
+`_files.added`.
+
+### Parameters
+
+| parameter | type   | description                                                                                |
+| --------- | ------ | ------------------------------------------------------------------------------------------ |
+| `payload` | Object | Github webhook [payload](https://developer.github.com/v3/activity/events/types/#pushevent) |
+
+
+
+**Returns** `parsedPayload`, a new parsedPayload with the `_files` property.
+
+`_files.modified` Array of files in push event commits, with duplicates
+removed and any files that were removed in a later commit also removed.
+
+`_files.removed` Array of files removed from the repo in the commits in the
+push event, duplicates removed.
+
+`_files.added` Array of files added to and modified in the repo, with
+duplicates removed and any files that were removed in a later commit also
+removed.
+
+## Installation
+
+Requires [nodejs](http://nodejs.org/).
+
+```sh
+$ npm install parse-github-webhook
 ```
 
-## Properties
+## Tests
 
-### payload._files.added
+```sh
+$ npm test
+```
 
-An array of new files added to the repo by the commits in the push event, with duplicates removed.
 
-### payload._files.modified
-
-An array of modified files in the commits in the push event, with duplicates removed.
-
-### payload._files.removed
-
-An array of files removed from the repo in the commits in the push event, duplicates removed.
-
-### payload._files.added_and_modified
-
-An array of all the files added to and modified in the repo, with duplicates removed and any files that were removed in a later commit also removed.
-
-## Running tests
-
-`npm test`

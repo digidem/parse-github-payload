@@ -1,10 +1,11 @@
 {
   "name": "parse-github-webhook",
   "version": "0.0.1",
-  "description": "Parses Github webhooks adding some useful data",
+  "description": "Parses a github push event adding a list of files added, modified and removed to the payload",
   "main": "index.js",
   "scripts": {
-    "test": "node test.js | node_modules/.bin/tap-spec"
+    "test": "node test.js | node_modules/.bin/tap-spec",
+    "doc": "dox -r < index.js | doxme --readme > README.md"
   },
   "keywords": [
     "github",
@@ -13,10 +14,20 @@
   "author": "Gregor MacLennan",
   "license": "MIT",
   "devDependencies": {
+    "dox": "^0.6.1",
+    "doxme": "^1.8.1",
     "tap-spec": "^2.1.2",
     "tape": "^3.0.3"
   },
   "dependencies": {
     "clone": "^0.2.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/digidem/parse-github-webhook.git"
+  },
+  "bugs": {
+    "url": "https://github.com/digidem/parse-github-webhook/issues"
+  },
+  "homepage": "https://github.com/digidem/parse-github-webhook"
 }
