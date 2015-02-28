@@ -87,3 +87,51 @@ test('Added or modified files subsequently removed are filtered from added_and_m
 
     t.deepEqual(parsed._files.added_and_modified.sort(), ['b', 'c'], 'removed files were filtered');
 });
+
+test('Only files that match options.matchName are returned', function(t) {
+    var payload = {
+        commits: [{
+            added: ['a.js'],
+            modified: ['b.xml'],
+            removed: ['c.js'],
+        },{
+            added: ['d.md'],
+            modified: ['e.js'],
+            removed: ['f.txt']
+        }]
+    };
+
+    var parsed = parse(payload, { matchName: /.*\.js$/ });
+
+    t.plan(4);
+
+    t.deepEqual(parsed._files.added_and_modified.sort(), ['a.js', 'e.js'], 'added_and_modified');
+    t.deepEqual(parsed._files.added.sort(), ['a.js'], 'added');
+    t.deepEqual(parsed._files.modified.sort(), ['e.js'], 'modified');
+    t.deepEqual(parsed._files.removed.sort(), ['c.js'], 'removed');
+});
+
+test('Only files commits that do not match options.ignoreCommit are returned', function(t) {
+    var payload = {
+        commits: [{
+            message: '[WEBHOOK] commit by automated webhook',
+            added: ['a.js'],
+            modified: ['b.xml'],
+            removed: ['c.js'],
+        },{
+            message: 'A human commit',
+            added: ['d.md'],
+            modified: ['e.js'],
+            removed: ['f.txt']
+        }]
+    };
+
+    var parsed = parse(payload, { ignoreCommit: /^\[WEBHOOK\]/ });
+
+    t.plan(4);
+
+    t.deepEqual(parsed._files.added_and_modified.sort(), ['d.md', 'e.js'], 'added_and_modified');
+    t.deepEqual(parsed._files.added.sort(), ['d.md'], 'added');
+    t.deepEqual(parsed._files.modified.sort(), ['e.js'], 'modified');
+    t.deepEqual(parsed._files.removed.sort(), ['f.txt'], 'removed');
+});

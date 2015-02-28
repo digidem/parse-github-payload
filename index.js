@@ -15,9 +15,14 @@ var clone = require('clone');
  * If you want to act on added or modified files that are present in the most
  * recent commit. A single push event might include commits that add then
  * delete a file. In this case that file would not be included in
- * `_files.added`.
+ * `_files.added`. This is most useful for webhooks that act on files added or
+ * modified in push events.
  * @param  {Object} payload Github webhook
  * [payload](https://developer.github.com/v3/activity/events/types/#pushevent)
+ * @param {Object} [options]
+ * @param {Regex} [options.matchName] only return files that match this regex.
+ * @param {Regex} [options.ignoreCommit] ignore files submitted with a commit message
+ * that matches this regex - useful for avoiding circular webhooks
  * @return {parsedPayload}         a new parsedPayload with the `_files`
  * property.
  *
@@ -35,11 +40,21 @@ var clone = require('clone');
  * modified in the commits in a push event, excluding files that were added or
  * modified and subsequently deleted.
  */
-function parsePayload(payload) {
+function parsePayload(payload, options) {
   if (typeof payload != 'object')
     throw new TypeError('must provide a payload object');
 
   if (!payload.commits) return payload;
+
+  options = options || {};
+  matchNameRe = options.matchName || new RegExp('.*');
+  ignoreCommitRe = options.ignoreCommit || new RegExp('a^');
+
+  if (!(matchNameRe instanceof RegExp))
+    throw new TypeError('options.matchName must be a Regular Expression');
+
+  if (!(ignoreCommitRe instanceof RegExp))
+    throw new TypeError('options.ignoreCommit must be a Regular Expression');
 
   var parsedPayload = clone(payload);
 
@@ -49,6 +64,7 @@ function parsePayload(payload) {
   // deleted.
   var added_and_modified = payload.commits
     .reduce(function(previousCommit, currentCommit) {
+      if (ignoreCommitRe.test(currentCommit.message)) return previousCommit;
       return previousCommit
         .concat(currentCommit.modified)
         .concat(currentCommit.added)
@@ -59,8 +75,8 @@ function parsePayload(payload) {
         });
     }, [])
     .filter(function(value, i, arr) {
-      // Remove duplicates
-      return arr.indexOf(value) >= i;
+      // Remove duplicates and only return files that match options.matchName
+      return arr.indexOf(value) >= i && matchNameRe.test(value);
     });
 
   parsedPayload._files = {
@@ -71,6 +87,9 @@ function parsePayload(payload) {
   // in the commits in a push event.
   ['added', 'modified', 'removed'].forEach(function(type) {
     parsedPayload._files[type] = payload.commits
+      .filter(function(commit) {
+        return !ignoreCommitRe.test(commit.message);
+      })
       .map(function(commit) {
         return commit[type];
       })
@@ -79,8 +98,8 @@ function parsePayload(payload) {
         return a.concat(b);
       })
       .filter(function(value, i, arr) {
-        // Remove duplicates
-        return arr.indexOf(value) >= i;
+        // Remove duplicates and only return files that match options.matchName
+        return arr.indexOf(value) >= i && matchNameRe.test(value);
       });
   });
 
