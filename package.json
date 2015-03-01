@@ -1,6 +1,6 @@
 {
   "name": "parse-github-payload",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Parses a github push event payload adding a list of files added, modified and removed to the payload",
   "main": "index.js",
   "scripts": {
