@@ -135,3 +135,16 @@ test('Only files commits that do not match options.ignoreCommit are returned', f
     t.deepEqual(parsed._files.modified.sort(), ['e.js'], 'modified');
     t.deepEqual(parsed._files.removed.sort(), ['f.txt'], 'removed');
 });
+
+test('Only files commits that do not match options.ignoreCommit are returned', function(t) {
+    var payload = require('./fixture.json');
+
+    var parsed = parse(payload, { ignoreCommit: /^\[RESIZE-WEBHOOK\]/ });
+
+    t.plan(4);
+
+    t.equal(parsed._files.added_and_modified.length, 0, 'added_and_modified');
+    t.equal(parsed._files.added.length, 0, 'added');
+    t.equal(parsed._files.modified.length, 0, 'modified');
+    t.equal(parsed._files.removed.length, 0, 'removed');
+});

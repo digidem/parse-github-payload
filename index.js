@@ -96,7 +96,7 @@ function parsePayload(payload, options) {
       .reduce(function(a, b) {
         // Flatten array
         return a.concat(b);
-      })
+      }, [])
       .filter(function(value, i, arr) {
         // Remove duplicates and only return files that match options.matchName
         return arr.indexOf(value) >= i && matchNameRe.test(value);
